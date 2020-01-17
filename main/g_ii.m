@@ -1,4 +1,4 @@
-function out_val = g_ii(freq_n, freq_m, epsilon, rbf_type, integration_algorithm)
+function out_val = g_ii(freq_n, freq_m, epsilon, rbf_type)
 
 alpha = 2*pi*freq_n/freq_m;
 
@@ -24,13 +24,11 @@ switch rbf_type
     otherwise
         warning('Unexpected RBF input.');
 end
-% end of switch
+    % end of switch
 
-integrand_g_ii = @(x) alpha./(1./exp(x)+alpha^2*exp(x)).*rbf(x);
+    integrand_g_ii = @(x) alpha./(1./exp(x)+alpha^2*exp(x)).*rbf(x);
 
-
-        out_val = integral(integrand_g_ii, -Inf, Inf,'RelTol',1E-6,'AbsTol',1e-6);
-
+    out_val = integral(integrand_g_ii, -Inf, Inf,'RelTol',1E-6,'AbsTol',1e-6);
 
 
 end

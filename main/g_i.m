@@ -1,9 +1,11 @@
-function out_val = g_i(freq_n, freq_m, epsilon, rbf_type, integration_algorithm)
+function out_val = g_i(freq_n, freq_m, epsilon, rbf_type)
 
 alpha = 2*pi*freq_n/freq_m;
 
 % choose among positive definite RBFs
 % choose a function from a switch
+
+
 switch rbf_type
     case 'gaussian'
         rbf = @(x) exp(-(epsilon*x).^2);
@@ -24,14 +26,12 @@ switch rbf_type
     otherwise
         warning('Unexpected RBF input');
 end
-% end of switch
+    % end of switch
 
 
-integrand_g_i = @(x) 1./(1+alpha^2*exp(2*x)).*rbf(x);
+    integrand_g_i = @(x) 1./(1+alpha^2*exp(2*x)).*rbf(x);
 
-
-        out_val = integral(integrand_g_i, -Inf, Inf,'RelTol',1E-9,'AbsTol',1e-9);
-
+    out_val = integral(integrand_g_i, -Inf, Inf,'RelTol',1E-9,'AbsTol',1e-9);
 
 
 end
