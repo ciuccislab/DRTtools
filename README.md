@@ -28,17 +28,17 @@ Detailed installation instructions are available in the DRT toolbox user's guide
 
 # **How to cite this work?**
 
-[1] T.H. Wan, M. Saccoccio, C. Chen, F. Ciucci, Influence of the Discretization Methods on the Distribution of Relaxation Times Deconvolution: Implementing Radial Basis Functions with DRTtools, Electrochimica Acta, 184 (2015) 483-499.
+**[1] T.H. Wan, M. Saccoccio, C. Chen, F. Ciucci, Influence of the Discretization Methods on the Distribution of Relaxation Times Deconvolution: Implementing Radial Basis Functions with DRTtools, Electrochimica Acta, 184 (2015) 483-499.**
 
 Link: https://doi.org/10.1016/j.electacta.2015.09.097
 
 if you are computing the credibility interval of the DRT, you should cite the following reference also:
 
-[2] M.B. Effat, F. Ciucci, Bayesian and Hierarchical Bayesian Based Regularization for Deconvolving the Distribution of Relaxation Times from Electrochemical Impedance Spectroscopy Data, Electrochimica Acta, 247 (2017) 1117-1129.
+**[2] M.B. Effat, F. Ciucci, Bayesian and Hierarchical Bayesian Based Regularization for Deconvolving the Distribution of Relaxation Times from Electrochemical Impedance Spectroscopy Data, Electrochimica Acta, 247 (2017) 1117-1129.**
 
 Link: https://doi.org/10.1016/j.electacta.2017.07.050
 
-[3] F. Ciucci, C. Chen, Analysis of Electrochemical Impedance Spectroscopy Data Using the Distribution of Relaxation Times: A Bayesian and Hierarchical Bayesian Approach, Electrochimica Acta, 167 (2015) 439-454.
+**[3] F. Ciucci, C. Chen, Analysis of Electrochemical Impedance Spectroscopy Data Using the Distribution of Relaxation Times: A Bayesian and Hierarchical Bayesian Approach, Electrochimica Acta, 167 (2015) 439-454.**
 
 Link: https://doi.org/10.1016/j.electacta.2015.03.123
 
