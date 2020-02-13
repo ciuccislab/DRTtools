@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MIT License
 %
-% Copyright (c) 2015 ciuccislab
+% Copyright (c) 2020 ciuccislab
 %
 % Permission is hereby granted, free of charge, to any person obtaining a copy
 % of this software and associated documentation files (the "Software"), to deal
@@ -480,7 +480,7 @@ g = eps*ones(size(handles.x_ridge(3:end)));
 initial_X = handles.x_ridge(3:end)+100*eps;
 L = str2num(get(handles.sample_number,'String'));
 
-if L>1000
+if L>=1000
 
     handles.Xs = HMC_exact(F, g, handles.Sigma, handles.mu, true, L, initial_X);
 
