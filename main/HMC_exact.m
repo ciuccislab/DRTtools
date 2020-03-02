@@ -94,7 +94,8 @@ end
 
 stop=0;   
 j=0;
-V0= normrnd(0,1, d,1);   % initial velocity
+% V0= normrnd(0,1, d,1);   % initial velocity
+V0= randn(d,1);
 X = last_X;
 
 T=pi/2;                  % total time the particle will move
