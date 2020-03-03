@@ -484,8 +484,10 @@ if L>=1000
 
     handles.Xs = HMC_exact(F, g, handles.Sigma, handles.mu, true, L, initial_X);
 
-    handles.lower_bound = quantile(handles.Xs(:,500:end),.005,2);
-    handles.upper_bound = quantile(handles.Xs(:,500:end),.995,2);
+%     handles.lower_bound = quantile(handles.Xs(:,500:end),.005,2);
+%     handles.upper_bound = quantile(handles.Xs(:,500:end),.995,2);
+    handles.lower_bound = quantile_alter(handles.Xs(:,500:end),.005,2,'R-5');
+    handles.upper_bound = quantile_alter(handles.Xs(:,500:end),.995,2,'R-5');
     handles.mean = mean(handles.Xs(:,500:end),2);
     
     set(handles.running_signal, 'Visible', 'off');
