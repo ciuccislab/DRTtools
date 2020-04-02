@@ -1,6 +1,6 @@
 # DRTTOOLS
 
-We are pleased to introduce the DRTtools, a free Matlab toolbox for computing distribution relaxation times (DRT) from electrochemical impedance spectroscopy (EIS) data.
+We are pleased to introduce the DRTtools, a free Matlab toolbox for computing distribution relaxation times (DRT) from electrochemical impedance spectroscopy (EIS) data. 
 
 What is the DRTtools? Why would I want it?
 
