@@ -91,12 +91,12 @@ handles.data_used = 'Combined Re-Im Data';
 handles.lambda = 1e-3;
 handles.coeff = 0.5;
 handles.file_type = 'Csv file';
-handles.shape_control = 'Coefficient to FWHM';
+handles.shape_control = 'FWHM Coefficient';
 handles.der_used = '1st-order';
 handles.data_exist = false;
 handles.drt_computed = false;
 handles.credibility = false; %%%%<---double check if we should delete this
-
+handles.upper_bound_fine = 0;
 % Update handles structure
 guidata(hObject, handles);
 
@@ -157,6 +157,8 @@ case '.txt' % User selects Txt files.
     fclose(fid);
 
     A = dlmread(fullFileName);
+    index = find(A(:,1)==0); % find incorrect columns
+    A(index,:)=[];
 
     handles.freq = A(:,1);
     handles.Z_prime_mat = A(:,2);
@@ -170,7 +172,9 @@ case '.txt' % User selects Txt files.
 
 case '.csv' % User selects csv.
     A = csvread(fullFileName);
-
+    index = find(A(:,1)==0); % find incorrect columns
+    A(index,:)=[];
+    
     handles.freq = A(:,1);
     handles.Z_prime_mat = A(:,2);
     handles.Z_double_prime_mat = A(:,3);
@@ -359,8 +363,8 @@ handles.x_im_0 = ones(size(handles.lb_im));
 handles.lb_re = zeros(numel(handles.freq)+2,1);
 handles.ub_re = Inf*ones(numel(handles.freq)+2,1);
 handles.x_re_0 = ones(size(handles.lb_re));
-handles.taumax = ceil(max(log10(1./handles.freq)))+1;    
-handles.taumin = floor(min(log10(1./handles.freq)))-1;
+handles.taumax = ceil(max(log10(1./handles.freq)))+0.5;    
+handles.taumin = floor(min(log10(1./handles.freq)))-0.5;
 
 handles.options = optimset('algorithm','interior-point-convex','Display','off','TolFun',1e-15,'TolX',1e-10,'MaxFunEvals', 1E5);
 
@@ -370,13 +374,13 @@ handles.b_im = -imag(handles.Z_exp);
 % calculate the epsilon
 switch handles.shape_control
 
-case 'Coefficient to FWHM'
+case 'FWHM Coefficient'
 
-    handles.delta = mean(diff(log(1./handles.freq))); 
+    handles.delta = mean(diff(log(1./handles.freq)));
     handles.epsilon  = handles.coeff*handles.FWHM_coeff/handles.delta;
 
 case 'Shape Factor'
-
+    
     handles.epsilon = handles.coeff;
         
 end
@@ -537,11 +541,13 @@ if handles.drt_computed
         
         if handles.credibility
             
-            handles.gamma_mean = handles.mean;
+            handles.gamma_mean_fine = handles.mean;
+            handles.lower_bound_fine = handles.lower_bound;
+            handles.upper_bound_fine = handles.upper_bound;
             
             ciplot(handles.lower_bound, handles.upper_bound, 1./handles.freq_fine, 0.7*[1 1 1]);%plot CI
             hold on
-            plot(1./handles.freq_fine, handles.gamma_mean, '-b', 'LineWidth', 3);%plot mean
+            plot(1./handles.freq_fine, handles.gamma_mean_fine, '-b', 'LineWidth', 3);%plot mean
             
         end
         
@@ -552,14 +558,14 @@ if handles.drt_computed
 
         if handles.credibility
             
-            handles.gamma_mean = map_array_to_gamma(handles.freq_fine, handles.freq, handles.mean, handles.epsilon, handles.rbf_type);
-            handles.lower_bound = map_array_to_gamma(handles.freq_fine, handles.freq, handles.lower_bound, handles.epsilon, handles.rbf_type);
-            handles.upper_bound = map_array_to_gamma(handles.freq_fine, handles.freq, handles.upper_bound, handles.epsilon, handles.rbf_type);
+            handles.gamma_mean_fine = map_array_to_gamma(handles.freq_fine, handles.freq, handles.mean, handles.epsilon, handles.rbf_type);
+            handles.lower_bound_fine = map_array_to_gamma(handles.freq_fine, handles.freq, handles.lower_bound, handles.epsilon, handles.rbf_type);
+            handles.upper_bound_fine = map_array_to_gamma(handles.freq_fine, handles.freq, handles.upper_bound, handles.epsilon, handles.rbf_type);
             
-            ciplot(handles.lower_bound, handles.upper_bound, 1./handles.freq_fine, 0.7*[1 1 1]);%plot CI
+            ciplot(handles.lower_bound_fine, handles.upper_bound_fine, 1./handles.freq_fine, 0.7*[1 1 1]);%plot CI
             hold on
-            plot(1./handles.freq_fine, handles.gamma_mean, '-b', 'LineWidth', 3);%plot mean
-            
+            plot(1./handles.freq_fine, handles.gamma_mean_fine, '-b', 'LineWidth', 3);%plot mean
+                        
         end
 
         handles.gamma_ridge_fine = map_array_to_gamma(handles.freq_fine, handles.freq, handles.x_ridge(3:end), handles.epsilon, handles.rbf_type);
@@ -581,7 +587,7 @@ if handles.drt_computed
 xlabel(handles.axes_panel_drt,'$\tau/s$', 'Interpreter', 'Latex','Fontsize',24)
 ylabel(handles.axes_panel_drt,'$\gamma(\tau)/\Omega$','Interpreter', 'Latex','Fontsize',24);
 
-set(gca,'xscale','log','xlim',[10^(handles.taumin), 10^(handles.taumax)],'ylim',[0, 1.1*max([handles.gamma_ridge_fine;handles.upper_bound])],'Fontsize',20,'xtick',10.^[-10:2:10])
+set(gca,'xscale','log','xlim',[10^(handles.taumin), 10^(handles.taumax)],'ylim',[0, 1.1*max([handles.gamma_ridge_fine;handles.upper_bound_fine])],'Fontsize',20,'xtick',10.^[-10:2:10])
 
 end
 
@@ -621,9 +627,9 @@ if ~handles.credibility % not bayesian
 else
     
     col_gamma = handles.gamma_ridge_fine(:);
-    col_mean = handles.gamma_mean(:);
-    col_upper = handles.upper_bound(:);
-    col_lower = handles.lower_bound(:);
+    col_mean = handles.gamma_mean_fine(:);
+    col_upper = handles.upper_bound_fine(:);
+    col_lower = handles.lower_bound_fine(:);
     fprintf(fid,'%s, %s, %s, %s, %s\n', 'tau', 'MAP', 'Mean', 'Upperbound', 'Lowerbound');
     fprintf(fid,'%e, %e, %e, %e, %e\n', [col_tau(:), col_gamma(:), col_mean(:), col_upper(:), col_lower(:)]');
 
