@@ -68,25 +68,7 @@ set(handles.inductance,'Value',1)
 set(handles.panel_EIS, 'Visible', 'on');
 set(handles.running_signal, 'Visible', 'off');
 
-% default values
-rbf_gaussian_4_FWHM = @(x) exp(-(x).^2)-1/2;
-rbf_C2_matern_4_FWHM = @(x) exp(-abs(x)).*(1+abs(x))-1/2;
-rbf_C4_matern_4_FWHM = @(x) 1/3*exp(-abs(x)).*(3+3*abs(x)+abs(x).^2)-1/2;
-rbf_C6_matern_4_FWHM = @(x) 1/15*exp(-abs(x)).*(15+15*abs(x)+6*abs(x).^2+abs(x).^3)-1/2;
-rbf_inverse_quadratic_4_FWHM = @(x)  1./(1+(x).^2)-1/2;
-rbf_inverse_quadric_4_FWHM = @(x)  1./sqrt(1+(x).^2)-1/2;
-rbf_cauchy_4_FWHM = @(x)  1./(1+abs(x))-1/2; 
-
-handles.FWHM_gaussian = 2*fzero(@(x) rbf_gaussian_4_FWHM(x), 1);
-handles.FWHM_C2_matern = 2*fzero(@(x) rbf_C2_matern_4_FWHM(x), 1);
-handles.FWHM_C4_matern = 2*fzero(@(x) rbf_C4_matern_4_FWHM(x), 1);
-handles.FWHM_C6_matern = 2*fzero(@(x) rbf_C6_matern_4_FWHM(x), 1);
-handles.FWHM_inverse_quadratic = 2*fzero(@(x) rbf_inverse_quadratic_4_FWHM(x), 1);
-handles.FWHM_inverse_quadric = 2*fzero(@(x) rbf_inverse_quadric_4_FWHM(x), 1);
-handles.FWHM_cauchy = 2*fzero(@(x) rbf_cauchy_4_FWHM(x) ,1);
-
-handles.FWHM_coeff = handles.FWHM_gaussian;
-handles.rbf_type = 'gaussian';
+handles.rbf_type = 'Gaussian';
 handles.data_used = 'Combined Re-Im Data';
 handles.lambda = 1e-3;
 handles.coeff = 0.5;
@@ -202,62 +184,17 @@ guidata(hObject,handles)
 % --- Selecting the type of discretization
 function dis_button_Callback(hObject, eventdata, handles)
 
-switch get(handles.dis_button,'Value')
+str = get(handles.dis_button,'String');
+val = get(handles.dis_button,'Value');
 
-case 1 % User selects Gaussian.
+handles.rbf_type = str{val};
 
-    handles.FWHM_coeff = handles.FWHM_gaussian;
-    handles.rbf_type = 'gaussian';
-    set(handles.RBF_option, 'Visible', 'on');
-% end select gaussian
-
-case 2 % User selects C2 Matern.
-
-    handles.FWHM_coeff = handles.FWHM_C2_matern;
-    handles.rbf_type = 'C2_matern';
-    set(handles.RBF_option, 'Visible', 'on');
-% end select C2 Matern
-
-case 3 % User selects C4 Matern.
-
-    handles.FWHM_coeff = handles.FWHM_C4_matern;
-    handles.rbf_type = 'C4_matern';
-    set(handles.RBF_option, 'Visible', 'on');
-% end select C4 Matern
-
-case 4 % User selects C6 Matern.
-
-    handles.FWHM_coeff = handles.FWHM_C6_matern;
-    handles.rbf_type = 'C6_matern';
-    set(handles.RBF_option, 'Visible', 'on');
-% end select C6 Matern
-
-case 5 % User selects inverse_quadratic.
-
-    handles.FWHM_coeff = handles.FWHM_inverse_quadratic;
-    handles.rbf_type = 'inverse_quadratic';
-    set(handles.RBF_option, 'Visible', 'on');
-% end select inverse_quadratic
-
-case 6 % User selects inverse_quadric.
-
-    handles.FWHM_coeff = handles.FWHM_inverse_quadric;
-    handles.rbf_type = 'inverse_quadric';
-    set(handles.RBF_option, 'Visible', 'on');
-% end select inverse_quadric
-
-case 7 % User selects cauchy.
-
-    handles.FWHM_coeff = handles.FWHM_cauchy;
-    handles.rbf_type = 'cauchy';
-    set(handles.RBF_option, 'Visible', 'on');
-% end select cauchy
-case 8
-
-    handles.rbf_type = 'piecewise';
+if strcmp(handles.rbf_type,'Piecewise linear')
     set(handles.RBF_option, 'Visible', 'off');
-
+else
+    set(handles.RBF_option, 'Visible', 'on');
 end
+
 
 guidata(hObject,handles) 
 
@@ -369,40 +306,28 @@ handles.taumin = floor(min(log10(1./handles.freq)))-0.5;
 handles.options = optimset('algorithm','interior-point-convex','Display','off','TolFun',1e-15,'TolX',1e-10,'MaxFunEvals', 1E5);
 
 handles.b_re = real(handles.Z_exp);% experimental
-handles.b_im = -imag(handles.Z_exp);
+handles.b_im = imag(handles.Z_exp);% negative sign deleted for the sake of consistency with python code
 
-% calculate the epsilon
-switch handles.shape_control
-
-case 'FWHM Coefficient'
-
-    handles.delta = mean(diff(log(1./handles.freq)));
-    handles.epsilon  = handles.coeff*handles.FWHM_coeff/handles.delta;
-
-case 'Shape Factor'
-    
-    handles.epsilon = handles.coeff;
-        
-end
+% compute epsilon
+handles.epsilon = compute_epsilon(handles.freq, handles.coeff, handles.rbf_type, handles.shape_control);
 
 % calculate the A_matrix and M_matrix
 handles.freq_fine = logspace(-handles.taumin, -handles.taumax, 10*numel(handles.freq));
 handles.A_re = assemble_A_re(handles.freq, handles.epsilon, handles.rbf_type);
 handles.A_im = assemble_A_im(handles.freq, handles.epsilon, handles.rbf_type);
-handles.M_re = assemble_M_re(handles.freq, handles.epsilon, handles.rbf_type, handles.der_used);
-handles.M_im = assemble_M_im(handles.freq, handles.epsilon, handles.rbf_type, handles.der_used);
+handles.M = assemble_M(handles.freq, handles.epsilon, handles.rbf_type, handles.der_used);
     
 % adding the inductance column to the A_im_matrix if necessary
 if  get(handles.inductance,'Value')==2
     
-    handles.A_im(:,1) = -2*pi*(handles.freq(:));
+    handles.A_im(:,1) = 2*pi*(handles.freq(:));% negative sign deleted for the sake of consistency with python code
     
 end
 
 % preparing for quadratic programming
-[H_re,f_re] = quad_format(handles.A_re, handles.b_re, handles.M_re, handles.lambda);
-[H_im,f_im] = quad_format(handles.A_im, handles.b_im, handles.M_im, handles.lambda);
-[H_combined,f_combined] = quad_format_combined(handles.A_re, handles.A_im, handles.b_re, handles.b_im, handles.M_re, handles.M_im, handles.lambda);
+[H_re,f_re] = quad_format(handles.A_re, handles.b_re, handles.M, handles.lambda);
+[H_im,f_im] = quad_format(handles.A_im, handles.b_im, handles.M, handles.lambda);
+[H_combined,f_combined] = quad_format_combined(handles.A_re, handles.A_im, handles.b_re, handles.b_im, handles.M, handles.lambda);
 warning('off')
 
 axes(handles.axes_panel_drt)
@@ -421,7 +346,7 @@ case 'Combined Re-Im Data'
 
     inv_V = 1/sigma_re_im^2*eye(numel(handles.freq));
     
-    Sigma_inv = (handles.A_re'*inv_V*handles.A_re) + (handles.A_im'*inv_V*handles.A_im) + (handles.lambda/sigma_re_im^2)*handles.M_im;%%<--look at the handles!
+    Sigma_inv = (handles.A_re'*inv_V*handles.A_re) + (handles.A_im'*inv_V*handles.A_im) + (handles.lambda/sigma_re_im^2)*handles.M;%%<--look at the handles!
     handles.Sigma_inv = (Sigma_inv+Sigma_inv')/2;
     handles.mu = Sigma_inv\(handles.A_re'*inv_V*handles.b_re + handles.A_im'*inv_V*handles.b_im);
 
@@ -435,7 +360,7 @@ case 'Im Data'
 
     inv_V = 1/sigma_re_im^2*eye(numel(handles.freq));
     
-    Sigma_inv = (handles.A_im'*inv_V*handles.A_im) + (handles.lambda/sigma_re_im^2)*handles.M_im;
+    Sigma_inv = (handles.A_im'*inv_V*handles.A_im) + (handles.lambda/sigma_re_im^2)*handles.M;
     handles.Sigma_inv = (Sigma_inv+Sigma_inv')/2;
     handles.mu = Sigma_inv\(handles.A_im'*inv_V*handles.b_im);
 
@@ -450,7 +375,7 @@ case 'Re Data'
     
     inv_V = 1/sigma_re_im^2*eye(numel(handles.freq));
     
-    Sigma_inv = (handles.A_re'*inv_V*handles.A_re) + (handles.lambda/sigma_re_im^2)*handles.M_re;
+    Sigma_inv = (handles.A_re'*inv_V*handles.A_re) + (handles.lambda/sigma_re_im^2)*handles.M;
     handles.Sigma_inv = (Sigma_inv+Sigma_inv')/2;
     handles.mu = Sigma_inv\(handles.A_re'*inv_V*handles.b_re);
         
@@ -534,7 +459,7 @@ function handles = deconvolved_DRT_Callback(hObject, eventdata, handles)
 
 if handles.drt_computed
        
-    if strcmp(handles.rbf_type,'piecewise')
+    if strcmp(handles.rbf_type,'Piecewise linear')
         
         handles.freq_fine = handles.freq;
         handles.gamma_ridge_fine = handles.x_ridge(3:end);

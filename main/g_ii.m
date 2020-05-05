@@ -5,24 +5,24 @@ alpha = 2*pi*freq_n/freq_m;
 % choose among positive definite RBFs
 % choose a function from a switch
 switch rbf_type
-    case 'gaussian'
+    case 'Gaussian'
         rbf = @(x) exp(-(epsilon*x).^2);
-    case 'C0_matern'
+    case 'C0 Matern'
         rbf = @(x) exp(-abs(epsilon*x));
-    case 'C2_matern'
+    case 'C2 Matern'
         rbf = @(x) exp(-abs(epsilon*x)).*(1+abs(epsilon*x));
-    case 'C4_matern'
+    case 'C4 Matern'
         rbf = @(x) 1/3*exp(-abs(epsilon*x)).*(3+3*abs(epsilon*x)+abs(epsilon*x).^2);
-    case 'C6_matern'
+    case 'C6 Matern'
         rbf = @(x) 1/15*exp(-abs(epsilon*x)).*(15+15*abs(epsilon*x)+6*abs(epsilon*x).^2+abs(epsilon*x).^3);
-    case 'inverse_quadratic'
+    case 'Inverse quadratic'
         rbf = @(x) 1./(1+(epsilon*x).^2);
-    case 'inverse_quadric'
+    case 'Inverse quadric'
         rbf = @(x) 1./sqrt(1+(epsilon*x).^2);
-    case 'cauchy'
+    case 'Cauchy'
         rbf = @(x) 1./(1+abs(epsilon*x));
     otherwise
-        warning('Unexpected RBF input.');
+        warning('Unexpected RBF input');
 end
     % end of switch
 

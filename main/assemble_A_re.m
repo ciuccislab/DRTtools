@@ -8,8 +8,8 @@ R = zeros(1,N_freq);
 C = zeros(N_freq,1);
 out_A_re = zeros(N_freq, N_freq+2);
 out_A_re_temp = zeros(N_freq);
-
-if std_freq/mean_freq<1 && ~strcmp(rbf_type,'piecewise')  %(error in frequency difference <1% make sure that the terms are evenly distributed)
+% disp(freq/mean_freq)
+if std_freq/mean_freq<1 && ~strcmp(rbf_type,'Piecewise linear')  %(error in frequency difference <1% make sure that the terms are evenly distributed)
     for iter_freq_n = 1: N_freq
         freq_n = freq(iter_freq_n);
             freq_m = freq(1);
@@ -33,7 +33,7 @@ else
             freq_n = freq(iter_freq_n);
             freq_m = freq(iter_freq_m);
             
-            if strcmp(rbf_type,'piecewise')
+            if strcmp(rbf_type,'Piecewise linear')
 
                 if iter_freq_m == 1
                     
