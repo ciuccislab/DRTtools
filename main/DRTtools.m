@@ -202,39 +202,42 @@ guidata(hObject,handles)
 % --- Selecting treatment to the inductance data
 function inductance_Callback(hObject, eventdata, handles)
 
-if handles.data_exist
-    switch get(handles.inductance,'Value')
-
-    case 1 %keep data fitting without inductance
-
-        handles.freq = handles.freq_0;
-        handles.Z_prime_mat = handles.Z_prime_mat_0;
-        handles.Z_double_prime_mat = handles.Z_double_prime_mat_0; 
-
-        handles.Z_exp = handles.Z_prime_mat(:)+ i*handles.Z_double_prime_mat(:);
-
-    case 2 %keep data fitting with inductance
-
-        handles.freq = handles.freq_0;
-        handles.Z_prime_mat = handles.Z_prime_mat_0;
-        handles.Z_double_prime_mat = handles.Z_double_prime_mat_0; 
-
-        handles.Z_exp = handles.Z_prime_mat(:)+ i*handles.Z_double_prime_mat(:);
-
-    case 3 %discard data
-
-        is_neg = -handles.Z_double_prime_mat(:)<0;
-        index = find(is_neg==1);
-        handles.Z_double_prime_mat(index) = [];
-        handles.Z_prime_mat(index) = [];
-        handles.freq(index) = [];
-
-    end
-    
-    handles.Z_exp = handles.Z_prime_mat(:)+ i*handles.Z_double_prime_mat(:);
-    
-    EIS_data_Callback(hObject, eventdata, handles)
+if ~handles.data_exist
+    return
 end
+
+switch get(handles.inductance,'Value')
+
+case 1 %keep data fitting without inductance
+
+    handles.freq = handles.freq_0;
+    handles.Z_prime_mat = handles.Z_prime_mat_0;
+    handles.Z_double_prime_mat = handles.Z_double_prime_mat_0; 
+
+    handles.Z_exp = handles.Z_prime_mat(:)+ i*handles.Z_double_prime_mat(:);
+
+case 2 %keep data fitting with inductance
+
+    handles.freq = handles.freq_0;
+    handles.Z_prime_mat = handles.Z_prime_mat_0;
+    handles.Z_double_prime_mat = handles.Z_double_prime_mat_0; 
+
+    handles.Z_exp = handles.Z_prime_mat(:)+ i*handles.Z_double_prime_mat(:);
+
+case 3 %discard data
+
+    is_neg = -handles.Z_double_prime_mat(:)<0;
+    index = find(is_neg==1);
+    handles.Z_double_prime_mat(index) = [];
+    handles.Z_prime_mat(index) = [];
+    handles.freq(index) = [];
+
+end
+
+handles.Z_exp = handles.Z_prime_mat(:)+ i*handles.Z_double_prime_mat(:);
+
+EIS_data_Callback(hObject, eventdata, handles)
+
 
 guidata(hObject,handles) 
 
@@ -291,6 +294,10 @@ function coef_Callback(hObject, eventdata, handles)
 % --- Simple Running regularization
 function handles = regularization_button_Callback(hObject, eventdata, handles)
 
+if ~handles.data_exist
+    return
+end
+    
 set(handles.running_signal, 'Visible', 'on');
 
 % bounds ridge regression
@@ -394,6 +401,10 @@ guidata(hObject,handles);
 
 %%%--- Bayesian run
 function bayesian_button_Callback(hObject, eventdata, handles)
+
+if ~handles.data_exist
+    return
+end    
 
 handles = regularization_button_Callback(hObject, eventdata, handles);
 

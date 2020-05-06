@@ -88,10 +88,21 @@ switch der_used
                 for iter_freq_n = 1: (N_freq-2)
 
                     delta_loc = log((1/freq(iter_freq_n+1))/(1/freq(iter_freq_n)));
+                    
+                     if iter_freq_n ==1 || iter_freq_n == N_freq-2
+                         out_L_temp(iter_freq_n,iter_freq_n) = 2./(delta_loc^2);
+                         out_L_temp(iter_freq_n,iter_freq_n+1) = -4./(delta_loc^2);
+                         out_L_temp(iter_freq_n,iter_freq_n+2) = 2./(delta_loc^2);
+            
+                     else
+                         out_L_temp(iter_freq_n,iter_freq_n) = 1./(delta_loc^2);
+                         out_L_temp(iter_freq_n,iter_freq_n+1) = -2./(delta_loc^2);
+                         out_L_temp(iter_freq_n,iter_freq_n+2) = 1./(delta_loc^2);
 
-                    out_L_temp(iter_freq_n,iter_freq_n) = 1/delta_loc^2;
-                    out_L_temp(iter_freq_n,iter_freq_n+1) = -2/delta_loc^2;
-                    out_L_temp(iter_freq_n,iter_freq_n+2) = 1/delta_loc^2;
+                     end
+%                     out_L_temp(iter_freq_n,iter_freq_n) = 1/delta_loc^2;
+%                     out_L_temp(iter_freq_n,iter_freq_n+1) = -2/delta_loc^2;
+%                     out_L_temp(iter_freq_n,iter_freq_n+2) = 1/delta_loc^2;
 
                 end
 
