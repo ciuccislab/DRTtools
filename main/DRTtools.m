@@ -467,65 +467,41 @@ set(handles.panel_drt, 'Visible', 'off');
 % --- plotting the DRT
 function handles = deconvolved_DRT_Callback(hObject, eventdata, handles)
 % Running ridge regression
-
-if handles.drt_computed
+if ~handles.drt_computed
+    return
+end    
        
-    if strcmp(handles.rbf_type,'Piecewise linear')
-        
-        handles.freq_fine = handles.freq;
-        handles.gamma_ridge_fine = handles.x_ridge(3:end);
-        
-        if handles.credibility
-            
-            handles.gamma_mean_fine = handles.mean;
-            handles.lower_bound_fine = handles.lower_bound;
-            handles.upper_bound_fine = handles.upper_bound;
-            
-            ciplot(handles.lower_bound, handles.upper_bound, 1./handles.freq_fine, 0.7*[1 1 1]);%plot CI
-            hold on
-            plot(1./handles.freq_fine, handles.gamma_mean_fine, '-b', 'LineWidth', 3);%plot mean
-            
-        end
-        
-        plot(1./handles.freq_fine, handles.gamma_ridge_fine, '-k', 'LineWidth', 3);%plot MAP 
-        hold off
+if handles.credibility
 
-    else %%% for RBF case
+        [handles.gamma_mean_fine,handles.freq_fine] = map_array_to_gamma(handles.freq_fine, handles.freq, handles.mean, handles.epsilon, handles.rbf_type);
+        [handles.lower_bound_fine,handles.freq_fine] = map_array_to_gamma(handles.freq_fine, handles.freq, handles.lower_bound, handles.epsilon, handles.rbf_type);
+        [handles.upper_bound_fine,handles.freq_fine] = map_array_to_gamma(handles.freq_fine, handles.freq, handles.upper_bound, handles.epsilon, handles.rbf_type);
 
-        if handles.credibility
-            
-            handles.gamma_mean_fine = map_array_to_gamma(handles.freq_fine, handles.freq, handles.mean, handles.epsilon, handles.rbf_type);
-            handles.lower_bound_fine = map_array_to_gamma(handles.freq_fine, handles.freq, handles.lower_bound, handles.epsilon, handles.rbf_type);
-            handles.upper_bound_fine = map_array_to_gamma(handles.freq_fine, handles.freq, handles.upper_bound, handles.epsilon, handles.rbf_type);
-            
-            ciplot(handles.lower_bound_fine, handles.upper_bound_fine, 1./handles.freq_fine, 0.7*[1 1 1]);%plot CI
-            hold on
-            plot(1./handles.freq_fine, handles.gamma_mean_fine, '-b', 'LineWidth', 3);%plot mean
-                        
-        end
+        ciplot(handles.lower_bound_fine, handles.upper_bound_fine, 1./handles.freq_fine, 0.7*[1 1 1]);%plot CI
+        hold on
+        plot(1./handles.freq_fine, handles.gamma_mean_fine, '-b', 'LineWidth', 3);%plot mean
 
-        handles.gamma_ridge_fine = map_array_to_gamma(handles.freq_fine, handles.freq, handles.x_ridge(3:end), handles.epsilon, handles.rbf_type);
-            
-        plot(1./handles.freq_fine, handles.gamma_ridge_fine, '-k', 'LineWidth', 3);
-        hold off
+end
 
-    end
+[handles.gamma_ridge_fine,handles.freq_fine] = map_array_to_gamma(handles.freq_fine, handles.freq, handles.x_ridge(3:end), handles.epsilon, handles.rbf_type);
 
-    if handles.credibility
-        %add legend
-        h = legend('CI', 'Mean', 'MAP', 'Location','NorthWest');
-        set(h,'Interpreter', 'LaTex','Fontsize', 24)
-        legend boxoff
-        
-    end
-    
+plot(1./handles.freq_fine, handles.gamma_ridge_fine, '-k', 'LineWidth', 3);
+hold off
+
+if handles.credibility
+    %add legend
+    h = legend('CI', 'Mean', 'MAP', 'Location','NorthWest');
+    set(h,'Interpreter', 'LaTex','Fontsize', 24)
+    legend boxoff
+
+end
+
 %adding labels
 xlabel(handles.axes_panel_drt,'$\tau/s$', 'Interpreter', 'Latex','Fontsize',24)
 ylabel(handles.axes_panel_drt,'$\gamma(\tau)/\Omega$','Interpreter', 'Latex','Fontsize',24);
 
 set(gca,'xscale','log','xlim',[10^(handles.taumin), 10^(handles.taumax)],'ylim',[0, 1.1*max([handles.gamma_ridge_fine;handles.upper_bound_fine])],'Fontsize',20,'xtick',10.^[-10:2:10])
 
-end
 
 set(handles.panel_EIS, 'Visible', 'off');
 set(handles.panel_drt, 'Visible', 'on');
