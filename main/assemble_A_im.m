@@ -9,19 +9,19 @@ C=zeros(N_freq,1);
 out_A_im_temp=zeros(N_freq);
 out_A_im = zeros(N_freq, N_freq+2);
 
-if std_freq/mean_freq<1 && ~strcmp(rbf_type,'piecewise') %(error in frequency difference <1% make sure that the terms are evenly distributed)
+if std_freq/mean_freq<1 && ~strcmp(rbf_type,'Piecewise linear') %(error in frequency difference <1% make sure that the terms are evenly distributed)
     for iter_freq_n = 1: N_freq
         
             freq_n = freq(iter_freq_n);
             freq_m = freq(1);
-            C(iter_freq_n, 1) = g_ii(freq_n, freq_m, epsilon, rbf_type);
+            C(iter_freq_n, 1) = -g_ii(freq_n, freq_m, epsilon, rbf_type);
     end  
 
     for iter_freq_m = 1: N_freq
 
             freq_n = freq(1);
             freq_m = freq(iter_freq_m);
-            R(1, iter_freq_m) = g_ii(freq_n, freq_m, epsilon, rbf_type);
+            R(1, iter_freq_m) = -g_ii(freq_n, freq_m, epsilon, rbf_type);
 
     end
     out_A_im_temp = toeplitz(C,R);
@@ -34,29 +34,29 @@ else
             freq_n = freq(iter_freq_n);
             freq_m = freq(iter_freq_m);
 
-            if strcmp(rbf_type,'piecewise')
+            if strcmp(rbf_type,'Piecewise linear')
 
                 if iter_freq_m == 1
                     
                     freq_m_plus_1 = freq(iter_freq_m+1);
-                    out_A_im_temp(iter_freq_n, iter_freq_m) = 0.5*(2*pi*freq_n/freq_m)/(1+((2*pi*freq_n/freq_m))^2)*log((1/freq_m_plus_1)/(1/freq_m));
+                    out_A_im_temp(iter_freq_n, iter_freq_m) = -0.5*(2*pi*freq_n/freq_m)/(1+((2*pi*freq_n/freq_m))^2)*log((1/freq_m_plus_1)/(1/freq_m));
                 
                 elseif iter_freq_m == N_freq
                     
                     freq_m_minus_1 = freq(iter_freq_m-1);
-                    out_A_im_temp(iter_freq_n, iter_freq_m) = 0.5*(2*pi*freq_n/freq_m)/(1+((2*pi*freq_n/freq_m))^2)*log((1/freq_m)/((1/freq_m_minus_1)));
+                    out_A_im_temp(iter_freq_n, iter_freq_m) = -0.5*(2*pi*freq_n/freq_m)/(1+((2*pi*freq_n/freq_m))^2)*log((1/freq_m)/((1/freq_m_minus_1)));
                 
                 else
                     
                     freq_m_plus_1 = freq(iter_freq_m+1);
                     freq_m_minus_1 = freq(iter_freq_m-1);
-                    out_A_im_temp(iter_freq_n, iter_freq_m) = 0.5*(2*pi*freq_n/freq_m)/(1+((2*pi*freq_n/freq_m))^2)*log((1/freq_m_plus_1)/(1/freq_m_minus_1));
+                    out_A_im_temp(iter_freq_n, iter_freq_m) = -0.5*(2*pi*freq_n/freq_m)/(1+((2*pi*freq_n/freq_m))^2)*log((1/freq_m_plus_1)/(1/freq_m_minus_1));
                 
                 end
                 
                 
             else
-               out_A_im_temp(iter_freq_n, iter_freq_m) = g_ii(freq_n, freq_m, epsilon, rbf_type);
+               out_A_im_temp(iter_freq_n, iter_freq_m) = -g_ii(freq_n, freq_m, epsilon, rbf_type);
             end
         end
     end
