@@ -3,8 +3,6 @@ function [Xs, bounce_count] = HMC_exact(F, g, M, mu_r, cov, L, initial_X)
 % Implementation of the algorithm described in http://arxiv.org/abs/1208.4118
 % Author: Ari Pakman
 
-
-
 % Returns samples from a d-dimensional Gaussian with m constraints given by  F*X+g >0 
 % If cov == true
 % then M is the covariance and the mean is mu = mu_r 

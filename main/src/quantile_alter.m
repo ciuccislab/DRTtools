@@ -1,5 +1,10 @@
 function [q,N] = quantile_alter(X,p,dim,method,weights)
-%QUANTILE Quantiles of a sample via various methods.
+
+%   this function is adapted from the IoSR Matlab Toolbox as an alternative
+%   to the built-in quantile.m function. the complete IoSR Matlab Toolbox 
+%   is given in https://github.com/IoSR-Surrey/MatlabToolbox
+%
+%   QUANTILE Quantiles of a sample via various methods.
 % 
 %   Q = IOSR.STATISTICS.QUANTILE(X,P) returns quantiles of the values in X.
 %   P is a scalar or a vector of cumulative probability values.  When X is
