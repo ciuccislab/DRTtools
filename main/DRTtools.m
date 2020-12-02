@@ -655,6 +655,9 @@ function Magnitude_Callback(hObject, eventdata, handles)
         hold on
         plot(handles.freq, abs(handles.Z_exp),'or', 'MarkerSize', 3)
         
+    else
+        plot(handles.freq, abs(handles.Z_exp),'or', 'MarkerSize', 3)
+        
     end
 
     xlabel(handles.axes_panel_drt,'$f$/Hz', 'Interpreter', 'Latex','Fontsize',24);
@@ -690,6 +693,9 @@ function Phase_Callback(hObject, eventdata, handles)
     elseif ~strcmp(handles.method_tag,'none')
         plot(handles.freq, rad2deg(angle(handles.mu_Z_re + handles.mu_Z_im*i)),'-k', 'LineWidth', 3);
         hold on
+        plot(handles.freq, rad2deg(angle(handles.Z_exp)),'or', 'MarkerSize', 3);
+        
+    else
         plot(handles.freq, rad2deg(angle(handles.Z_exp)),'or', 'MarkerSize', 3);
         
     end
@@ -730,7 +736,10 @@ function Re_data_Callback(hObject, eventdata, handles)
         plot(handles.freq,handles.mu_Z_re,'-k', 'LineWidth', 3);
         hold on
         plot(handles.freq, handles.Z_prime_mat,'or', 'MarkerSize', 3);
-
+        
+    else
+        plot(handles.freq, handles.Z_prime_mat,'or', 'MarkerSize', 3);
+        
     end
 
     xlabel(handles.axes_panel_drt,'$f$/Hz', 'Interpreter', 'Latex','Fontsize',24);
@@ -765,6 +774,10 @@ function Im_data_Callback(hObject, eventdata, handles)
     elseif ~strcmp(handles.method_tag,'none')
         plot(handles.freq,-handles.mu_Z_im,'-k', 'LineWidth', 3);
         hold on
+        plot(handles.freq, -handles.Z_double_prime_mat,'or', 'MarkerSize', 3);
+    
+    else
+        plot(handles.freq, -handles.Z_double_prime_mat,'or', 'MarkerSize', 3);
 
     end
 
