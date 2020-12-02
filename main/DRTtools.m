@@ -939,12 +939,12 @@ function EIS_Scores_Callback(hObject, eventdata, handles)
     axes(handles.axes_panel_drt)
 
     X = categorical({'s_{1\sigma}','s_{2\sigma}','s_{3\sigma}','s_{mu}','s_{HD}','s_{JSD}'});
-    Y = [handles.out_scores.s_res_re(1), handles.out_scores.s_res_re(2), handles.out_scores.s_res_re(3),...
-         handles.out_scores.s_mu_re, handles.out_scores.s_HD_re, handles.out_scores.s_JSD_re;
-         handles.out_scores.s_res_im(1), handles.out_scores.s_res_im(2), handles.out_scores.s_res_im(3),...
-         handles.out_scores.s_mu_im, handles.out_scores.s_HD_im, handles.out_scores.s_JSD_im]';
+    X = reordercats(X,{'s_{1\sigma}','s_{2\sigma}','s_{3\sigma}','s_{mu}','s_{HD}','s_{JSD}'}); 
+    Y = [handles.out_scores.s_res_re(1), handles.out_scores.s_res_re(2), handles.out_scores.s_res_re(3), handles.out_scores.s_mu_re, handles.out_scores.s_HD_re, handles.out_scores.s_JSD_re;
+         handles.out_scores.s_res_im(1), handles.out_scores.s_res_im(2), handles.out_scores.s_res_im(3), handles.out_scores.s_mu_im, handles.out_scores.s_HD_im, handles.out_scores.s_JSD_im]';
     
     b = bar(X,Y*100);
+%     b = histogram('Categories', X, 'BinCounts', Y*100);
     b(1).FaceColor = [0 0 1];
     b(2).FaceColor = [0 0 0];
     
