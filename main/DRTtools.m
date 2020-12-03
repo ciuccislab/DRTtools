@@ -673,7 +673,7 @@ function Phase_Callback(hObject, eventdata, handles)
         plot(handles.freq, rad2deg(angle(handles.mu_Z_re + handles.mu_Z_im*1i)),'-k', 'LineWidth', 3);%% note that this is the Hilbert transformed real part
         hold on
         plot(handles.freq, rad2deg(angle(handles.mu_Z_H_re_agm + handles.mu_Z_H_im_agm*1i)),'-b', 'LineWidth', 3);%% note that this is the Hilbert transformed real part
-        plot(handles.freq, rad2deg(angle(handles.Z_exp)),'or', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+        plot(handles.freq, rad2deg(angle(handles.Z_exp)),'or', 'MarkerSize', 4, 'MarkerFaceColor', 'r');
         
         h = legend('$Z_\mu$(Regressed)', '$Z_H$(Hilbert transform)', 'Location','NorthWest');
         set(h,'Interpreter', 'LaTex','Fontsize', 24)
@@ -682,10 +682,10 @@ function Phase_Callback(hObject, eventdata, handles)
     elseif ~strcmp(handles.method_tag,'none')
         plot(handles.freq, rad2deg(angle(handles.mu_Z_re + handles.mu_Z_im*1i)),'-k', 'LineWidth', 3);
         hold on
-        plot(handles.freq, rad2deg(angle(handles.Z_exp)),'or', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+        plot(handles.freq, rad2deg(angle(handles.Z_exp)),'or', 'MarkerSize', 4, 'MarkerFaceColor', 'r');
         
     else
-        plot(handles.freq, rad2deg(angle(handles.Z_exp)),'or', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+        plot(handles.freq, rad2deg(angle(handles.Z_exp)),'or', 'MarkerSize', 4, 'MarkerFaceColor', 'r');
         
     end
     
@@ -715,7 +715,7 @@ function Re_data_Callback(hObject, eventdata, handles)
         hold on
         C1 = plot(handles.freq,handles.mu_Z_re,'-k', 'LineWidth', 3);
         C2 = plot(handles.freq,handles.mu_Z_H_re_agm,'-b', 'LineWidth', 3);
-        plot(handles.freq, handles.Z_prime_mat,'or', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+        plot(handles.freq, handles.Z_prime_mat,'or', 'MarkerSize', 4, 'MarkerFaceColor', 'r');
         
         h = legend([C1,C2],{'$Z_\mu$(Regressed)', '$Z_H$(Hilbert transform)'}, 'Location','NorthWest');
         set(h,'Interpreter', 'LaTex','Fontsize', 24)
@@ -724,10 +724,10 @@ function Re_data_Callback(hObject, eventdata, handles)
     elseif ~strcmp(handles.method_tag,'none')
         plot(handles.freq,handles.mu_Z_re,'-k', 'LineWidth', 3);
         hold on
-        plot(handles.freq, handles.Z_prime_mat,'or', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+        plot(handles.freq, handles.Z_prime_mat,'or', 'MarkerSize', 4, 'MarkerFaceColor', 'r');
         
     else
-        plot(handles.freq, handles.Z_prime_mat,'or', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+        plot(handles.freq, handles.Z_prime_mat,'or', 'MarkerSize', 4, 'MarkerFaceColor', 'r');
         
     end
 
@@ -754,7 +754,7 @@ function Im_data_Callback(hObject, eventdata, handles)
         hold on
         C1 = plot(handles.freq,-handles.mu_Z_im,'-k', 'LineWidth', 3);
         C2 = plot(handles.freq,-handles.mu_Z_H_im_agm,'-b', 'LineWidth', 3);
-        plot(handles.freq,-handles.Z_double_prime_mat,'or', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+        plot(handles.freq,-handles.Z_double_prime_mat,'or', 'MarkerSize', 4, 'MarkerFaceColor', 'r');
         
         h = legend([C1,C2],{'$Z_\mu$(Regressed)', '$Z_H$(Hilbert transform)'}, 'Location','NorthWest');
         set(h,'Interpreter', 'LaTex','Fontsize', 24)
@@ -763,10 +763,10 @@ function Im_data_Callback(hObject, eventdata, handles)
     elseif ~strcmp(handles.method_tag,'none')
         plot(handles.freq,-handles.mu_Z_im,'-k', 'LineWidth', 3);
         hold on
-        plot(handles.freq, -handles.Z_double_prime_mat,'or', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+        plot(handles.freq, -handles.Z_double_prime_mat,'or', 'MarkerSize', 4, 'MarkerFaceColor', 'r');
     
     else
-        plot(handles.freq, -handles.Z_double_prime_mat,'or', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+        plot(handles.freq, -handles.Z_double_prime_mat,'or', 'MarkerSize', 4, 'MarkerFaceColor', 'r');
 
     end
 
@@ -791,13 +791,13 @@ function Residual_Re_Callback(hObject, eventdata, handles)
 %       Residual w.r.t. mu_Z_H_re
         ciplot(-3*handles.band_re_agm, 3*handles.band_re_agm, handles.freq, 0.7*[1 1 1]);
         hold on
-        plot(handles.freq,handles.res_H_re,'or', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+        plot(handles.freq,handles.res_H_re,'or', 'MarkerSize', 4, 'MarkerFaceColor', 'r');
         ylabel(handles.axes_panel_drt,'$R_{\infty}+Z^{\prime}_{\rm H}-Z^{\prime}_{\rm exp}$','Interpreter', 'Latex','Fontsize',24);
         
         y_max = max(3*handles.band_re_agm);
 
     else
-        plot(handles.freq, handles.res_re,'or', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+        plot(handles.freq, handles.res_re,'or', 'MarkerSize', 4, 'MarkerFaceColor', 'r');
         ylabel(handles.axes_panel_drt,'$Z^{\prime}_{\rm DRT}-Z^{\prime}_{\rm exp}$','Interpreter', 'Latex','Fontsize',24);
         
         y_max = max(abs(handles.res_re));
@@ -826,13 +826,13 @@ function Residual_Im_Callback(hObject, eventdata, handles)
         % Residual w.r.t. mu_Z_H_im
         ciplot(-3*handles.band_im_agm,3*handles.band_im_agm, handles.freq, 0.7*[1 1 1]);
         hold on
-        plot(handles.freq,handles.res_H_im,'or', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+        plot(handles.freq,handles.res_H_im,'or', 'MarkerSize', 4, 'MarkerFaceColor', 'r');
         ylabel(handles.axes_panel_drt,'$\omega L_0+Z^{\prime\prime}_{\rm H}-Z^{\prime\prime}_{\rm exp}$','Interpreter', 'Latex','Fontsize',24);
         
         y_max = max(3*handles.band_im_agm);
 
     else
-        plot(handles.freq,handles.res_im,'or', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+        plot(handles.freq,handles.res_im,'or', 'MarkerSize', 4, 'MarkerFaceColor', 'r');
         hold on
         ylabel(handles.axes_panel_drt,'$Z^{\prime\prime}_{\rm DRT}-Z^{\prime\prime}_{\rm exp}$','Interpreter', 'Latex','Fontsize',24);
 
