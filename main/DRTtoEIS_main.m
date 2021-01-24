@@ -567,14 +567,12 @@ axis equal
 pbaspect([1 1 1])
 hold off
 
-assignin('base','X_DFRT_long',x);      %save extended range DFRT
-assignin('base','Y_DFRT_long',y);      %save exteneded range DFRT 
-assignin('base','X_DFRT_short',x);     %save short range DFRT
-assignin('base','Y_DFRT_short',y);     %save short range DFRT
-assignin('base','Z_re_exp',x2{2,:}');      %save Z' Exp
-assignin('base','Z_imag_exp',y2{2,:}');      %save Z'' exp
-assignin('base','Z_re_DFRT',x2{1,:}');     %save Z' from DFRT
-assignin('base','Z_imag_DFRT',y2{1,:}');     %save Z'' from DFRT
+assignin('base','X_DFRT_long',x);      %save DRT
+assignin('base','Y_DFRT_long',y);      %save DRT 
+assignin('base','Z_re_exp',x2{1,:}');      %save Z' Exp
+assignin('base','Z_imag_exp',y2{1,:}');      %save Z'' exp
+assignin('base','Z_re_DFRT',x2{2,:}');     %save Z' from DFRT
+assignin('base','Z_imag_DFRT',y2{2,:}');     %save Z'' from DFRT
 assignin('base','Rinf',handles.Rinf);      %save Rinf
 assignin('base','f_exp',handles.freq);
 assignin('base','f_dfrt',handles.f);
