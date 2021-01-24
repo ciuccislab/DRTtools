@@ -57,13 +57,17 @@ function import1_OpeningFcn(hObject, eventdata, handles, varargin)
 
     end
     
-%   Add path for the src folder
+    %   Add path for the src folder
     startingFolder = pwd;
     fun_path = strcat(startingFolder,'\src');
-%     addpath(startingFolder,'-end');
+    %     addpath(startingFolder,'-end');
     addpath(fun_path,'-end');
-
-%   Set up inital value
+    
+    p = mfilename('fullpath');  % get the path of the current script
+    fp = genpath(fileparts(p));    % get all the subdirectories in this folder
+    addpath(fp);    % add all subfolders to current path
+    
+    %   Set up inital value
     handles.output = hObject;
     set(handles.dis_button,'Value',1)
     set(handles.plot_pop,'Value',1)
@@ -1100,4 +1104,59 @@ function Save_DRT_figure_Callback(hObject, eventdata, handles)
  guidata(hObject,handles)
  
 
+% --- Calculate the reconstructed Impedance
+function drttoeis_Callback(hObject, eventdata, handles)
+
+
+switch handles.method_tag
+    case 'simple'                                   %Simple Run
+        DFRT = handles.gamma_ridge_fine;  
+        L = handles.x_ridge(1);
+        Rinf = handles.x_ridge(2);
+    case 'credit'                                   %Bayesian Run
+        answer = questdlg('Which DRT solution would you like to use?', ...
+            'Choose DRT', ...
+            'Mean','MAP','Mean');
+        % Handle response
+        switch answer
+            case 'Mean'
+                DFRT = handles.gamma_mean_fine;
+            case 'MAP'
+                DFRT = handles.gamma_ridge_fine;
+        end
+        L = handles.x_ridge(1);
+        Rinf = handles.x_ridge(2);
+    case 'BHT'                                      %Hilbert Transform
+        answer = questdlg('Which DRT solution would you like to use?', ...
+            'Choose DRT', ...
+            'Mean Re','Mean Im','Mean Im');
+        % Handle response
+        switch answer
+            case 'Mean Re'
+                DFRT = handles.gamma_mean_fine_re;
+            case 'Mean Im'
+                DFRT = handles.gamma_mean_fine_im;
+        end
+        
+        L = handles.mu_L_0;
+        Rinf = handles.mu_R_inf;
+        
+end
+
+tau = 1./(2.*pi.*handles.freq_fine)';
+freq = handles.freq;
+Zreal = handles.Z_prime_mat;
+Zimag = handles.Z_double_prime_mat;
+
+
+assignin('base','L',L)
+setappdata(0, 'L', L);
+setappdata(0, 'tau', tau);
+setappdata(0, 'DFRT', DFRT);
+setappdata(0, 'freq', freq);
+setappdata(0, 'Zreal', Zreal);
+setappdata(0, 'Zimag', Zimag);
+setappdata(0, 'Rinf', Rinf);
+run('DRTtoEIS_main')
+guidata(hObject,handles)
 
