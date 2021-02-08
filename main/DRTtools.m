@@ -60,8 +60,10 @@ function import1_OpeningFcn(hObject, eventdata, handles, varargin)
 %   Add path for the src folder
     startingFolder = pwd;
     fun_path = strcat(startingFolder,'\src');
-%     addpath(startingFolder,'-end');
     addpath(fun_path,'-end');
+    p = mfilename('fullpath');  % get the path of the current script
+    fp = genpath(fileparts(p));    % get all the subdirectories in this folder
+    addpath(fp);    % add all subfolders to current path      
 
 %   Set up inital value
     handles.output = hObject;
