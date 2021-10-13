@@ -1417,7 +1417,7 @@ function Export_DRT_Data_Callback(hObject, eventdata, handles)
                     fprintf(fid, num_entry, [col_tau(:), col_gamma(:), col_gamma_gauss]');
                     
                 case 2 %gamma vs frequency
-                    fprintf(fid,'%s, %s \n','freq','gamma(freq)');
+                    fprintf(fid,'%s, %s, ','freq','gamma(freq)');
                    
                     for i = 1:handles.N_peak
                         string_to_add = "gamma_gauss_"+num2str(i);
@@ -1430,7 +1430,7 @@ function Export_DRT_Data_Callback(hObject, eventdata, handles)
                     fprintf(fid, num_entry, [col_freq(:), col_gamma(:), col_gamma_gauss]');
                     
                 case 3 %g vs tau
-                    fprintf(fid,'%s, %s \n','tau','g(tau)');
+                    fprintf(fid,'%s, %s, ','tau','g(tau)');
                    
                     for i = 1:handles.N_peak
                         string_to_add = "g_gauss_"+num2str(i);
@@ -1444,7 +1444,7 @@ function Export_DRT_Data_Callback(hObject, eventdata, handles)
                     
                     
                 case 4 %g vs frequency
-                    fprintf(fid,'%s, %s \n','freq','g(freq)');
+                    fprintf(fid,'%s, %s, ','freq','g(freq)');
                    
                     for i = 1:handles.N_peak
                         string_to_add = "g_gauss_"+num2str(i);
