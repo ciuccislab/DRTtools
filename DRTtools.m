@@ -619,7 +619,7 @@ guidata(hObject,handles)
 
 
 % peak analysis
-% this part is activated when the peak analysis button is pressed
+% this part is activated when the peak deconvolution button is pressed
 % TODO: should be moved to ad hoc function
 % peak_flag
 function peak_analysis_Callback(hObject, eventdata, handles)
@@ -699,9 +699,6 @@ function peak_analysis_Callback(hObject, eventdata, handles)
     
     handles.p_result = reshape(p_ref.*p_fit, [3, handles.N_peak]);
     handles.gamma_gauss = gauss_fct(handles.tau_fine, p_ref, p_fit);
-    
-    % Step 3: convert gaussian function to Z
-    % handles.Z_DRT = Z_DRT();
 
     % Step 3: for loop convert gaussian function to gamma_mat
     handles.gamma_gauss_mat = zeros(numel(handles.tau_fine), handles.N_peak);
@@ -1326,8 +1323,8 @@ function Export_DRT_Data_Callback(hObject, eventdata, handles)
             col_gamma = handles.gamma_ridge_fine(:);
             col_g = handles.gamma_ridge_fine(:).*handles.freq_fine(:);
             
-            fprintf(fid, '%s, %e \n', 'L',handles.x_ridge(1));
-            fprintf(fid, '%s, %e \n', 'R',handles.x_ridge(2));
+            fprintf(fid, '%s, %e \n', 'L_0',handles.x_ridge(1));
+            fprintf(fid, '%s, %e \n', 'R_infinity',handles.x_ridge(2));
             
             switch get(handles.DRT_type, 'Value')
                 case 1 %gamma vs tau
@@ -1356,8 +1353,8 @@ function Export_DRT_Data_Callback(hObject, eventdata, handles)
             col_lower = handles.lower_bound_fine(:);
             col_lower_g = handles.lower_bound_fine(:).*handles.freq_fine(:);
             
-            fprintf(fid, '%s, %e \n', 'L',handles.x_ridge(1));
-            fprintf(fid, '%s, %e \n', 'R',handles.x_ridge(2));
+            fprintf(fid, '%s, %e \n', 'L_0',handles.x_ridge(1));
+            fprintf(fid, '%s, %e \n', 'R_infinity',handles.x_ridge(2));
             
             switch get(handles.DRT_type, 'Value')
                 case 1 %gamma vs tau
@@ -1382,8 +1379,8 @@ function Export_DRT_Data_Callback(hObject, eventdata, handles)
             col_im = handles.gamma_mean_fine_im(:);
             col_im_g = handles.gamma_mean_fine_im(:).*handles.freq_fine(:);
             
-            fprintf(fid, '%s, %e \n', 'L',handles.mu_L_0);
-            fprintf(fid, '%s, %e \n', 'R',handles.mu_R_inf);
+            fprintf(fid, '%s, %e \n', 'L_0',handles.mu_L_0);
+            fprintf(fid, '%s, %e \n', 'R_infinity',handles.mu_R_inf);
             
             switch get(handles.DRT_type, 'Value')
                 case 1 %gamma vs tau
@@ -1408,13 +1405,13 @@ function Export_DRT_Data_Callback(hObject, eventdata, handles)
             peak_log_tau_mu = p_fit(2, :);
             peak_sigma = p_fit(3, :);
 
-            fprintf(fid, '%s, %e \n', 'L',handles.x_ridge(1));
-            fprintf(fid, '%s, %e \n', 'R',handles.x_ridge(2));
+            fprintf(fid, '%s, %e \n', 'L_0',handles.x_ridge(1));
+            fprintf(fid, '%s, %e \n', 'R_infinity',handles.x_ridge(2));
             fprintf(fid, 'function , peak_height*exp(-1/2*(log_tau - peak_position)^2/peak_width^2) \n')
             fprintf(fid, 'peak number , peak height , peak position, peak width\n');
             
             st = string(1:handles.N_peak)';
-            fprintf(fid, '%s, %e, %e, %e \n', [st(:), peak_height(:), peak_log_tau_mu(:), peak_sigma(:)]' );
+            fprintf(fid, '%s, %.8f, %.8f, %.8f \n', [st(:), peak_height(:), peak_log_tau_mu(:), peak_sigma(:)]' );
             
     end
 
