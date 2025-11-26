@@ -35,7 +35,7 @@ function out_scores = EIS_score(theta_0, freq_vec, Z_exp, out_dict_real, out_dic
 %   mean:
     res_re = mu_R_inf + mu_Z_H_re - real(Z_exp);
 %   std:
-    band_re = sqrt(cov_R_inf + diag(Sigma_Z_H_re)+sigma_n_im.^2); %# this calculate the std of R+ Z_H_re +sigma_n_im^2<--shouldn't it be the real part instead? 
+    band_re = sqrt(cov_R_inf + diag(Sigma_Z_H_re)+sigma_n_im.^2); % this calculate the std of R+ Z_H_re +sigma_n_im^2<--shouldn't it be the real part instead? 
     s_res_re = res_score(res_re, band_re);
      
 %   imaginary part
